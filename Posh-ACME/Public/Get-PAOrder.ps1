@@ -24,7 +24,7 @@ function Get-PAOrder {
             # update from the server first if requested
             if ($Refresh) {
                 Write-Debug "Refreshing orders"
-                Get-PAOrder -List  | Update-PAOrder
+                Get-PAOrder -List | Update-PAOrder
             }
 
             # read the contents of each order's order.json
@@ -37,9 +37,15 @@ function Get-PAOrder {
                 $_.CertExpires = Repair-ISODate $_.CertExpires
                 $_.RenewAfter = Repair-ISODate $_.RenewAfter
 
+                # rename pre-4.x DnsPlugin parameter to Plugin
+                if ('DnsPlugin' -in $_.PSObject.Properties.Name) {
+                    $_ | Add-Member -MemberType NoteProperty -Name 'Plugin' -Value $_.DnsPlugin
+                    $_.PSObject.Properties.Remove('DnsPlugin')
+                }
+
                 # insert the type name and send the results to the pipeline
                 $_.PSObject.TypeNames.Insert(0,'PoshACME.PAOrder')
-                $_
+                Write-Output $_
             }
 
             return $orders
@@ -64,6 +70,12 @@ function Get-PAOrder {
                     $order.expires = Repair-ISODate $order.expires
                     $order.CertExpires = Repair-ISODate $order.CertExpires
                     $order.RenewAfter = Repair-ISODate $order.RenewAfter
+
+                    # rename pre-4.x DnsPlugin parameter to Plugin
+                    if ('DnsPlugin' -in $order.PSObject.Properties.Name) {
+                        $order | Add-Member -MemberType NoteProperty -Name 'Plugin' -Value $order.DnsPlugin
+                        $order.PSObject.Properties.Remove('DnsPlugin')
+                    }
 
                 } else {
                     return $null

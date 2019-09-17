@@ -45,6 +45,7 @@ $script:WellKnownDirs = @{
 $script:HEADER_NONCE = 'Replay-Nonce'
 $script:USER_AGENT = "Posh-ACME/3.16.0 PowerShell/$($PSVersionTable.PSVersion)"
 $script:COMMON_HEADERS = @{'Accept-Language'='en-us,en;q=0.5'}
+$script:PluginTypes = @{}
 
 # Invoke-WebRequest and Invoke-RestMethod on PowerShell 5.1 both use
 # IE's DOM parser by default which gives you some nice things that we
