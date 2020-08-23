@@ -109,6 +109,26 @@ function Import-PAConfig {
 
             $ImportOrder = $true
 
+            # Check for a v3 plugindata.xml file and convert it to order-specific v4
+            # files.
+            $pDataV3File = Join-Path $script:AcctFolder 'plugindata.xml'
+            if (Test-Path $pDataV3File -PathType Leaf) {
+                Write-Debug "Migrating v3 plugindata.xml"
+                $pDataV3 = Import-Clixml $pDataV3File
+
+                # Loop through the available orders
+                Get-PAOrder -List -Refresh | ForEach-Object {
+                    if ($_.Plugin) {
+                        Write-Debug "Migrating for $($_.MainDomain)"
+                        Export-PluginArgs $_.MainDomain $_.Plugin $pDataV3
+                    } else {
+                        Write-Debug "No Plugins defined for order $($_.MainDomain)"
+                    }
+                }
+
+                Move-Item $pDataV3File (Join-Path $script:AcctFolder 'plugindata.xml.v3')
+            }
+
         } else {
             # wipe references since we have no current account
             $script:AcctFolder = $null
