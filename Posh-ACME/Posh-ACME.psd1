@@ -44,7 +44,7 @@ FormatsToProcess = 'Posh-ACME.Format.ps1xml'
 FunctionsToExport = @(
     'Get-KeyAuthorization'
     'Get-PAAccount'
-    'Get-PAAuthorizations'
+    'Get-PAAuthorization'
     'Get-PACertificate'
     'Get-PAOrder'
     'Get-PAPlugin'
